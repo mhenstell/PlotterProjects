@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="lib" path="lib/base/dxf/dxf.jar" sourcepath="/Applications/Processing.app/Contents/Resources/Java/libraries/dxf/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PlotterDigitizer/lib/base/dxf"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/geomerative/batikfont.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PlotterDigitizer/lib/base/geomerative"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/geomerative/geomerative.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PlotterDigitizer/lib/base/geomerative"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/net/net.jar" sourcepath="/Applications/Processing.app/Contents/Resources/Java/libraries/net/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PlotterDigitizer/lib/base/net"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/pdf/itext.jar" sourcepath="/Applications/Processing.app/Contents/Resources/Java/libraries/pdf/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PlotterDigitizer/lib/base/pdf"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/pdf/pdf.jar" sourcepath="/Applications/Processing.app/Contents/Resources/Java/libraries/pdf/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PlotterDigitizer/lib/base/pdf"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/serial/RXTXcomm.jar" sourcepath="/Applications/Processing.app/Contents/Resources/Java/libraries/serial/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PlotterDigitizer/lib/base/serial"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/serial/serial.jar" sourcepath="/Applications/Processing.app/Contents/Resources/Java/libraries/serial/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PlotterDigitizer/lib/base/serial"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/core/ant-launcher.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PlotterDigitizer/lib/base/core"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/core/ant.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PlotterDigitizer/lib/base/core"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/base/core/core.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PlotterDigitizer/lib/base/core"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
