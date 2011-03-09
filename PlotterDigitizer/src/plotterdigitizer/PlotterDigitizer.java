@@ -118,9 +118,23 @@ public class PlotterDigitizer extends PApplet {
 		
 	}
 	
+	public void drawShape(RShape shape) {
+		
+			
+			RPoint[][] pointsArray = shape.getPointsInPaths();
+			
+			for (RPoint[] points : pointsArray) {
+				plotter.plotPath(new RPath(points));
+			}
+		
+	}
+	
 	public void keyPressed() {
 		if (key == 's') {
 			RG.saveShape(saveFilePath, shape);
+		} else if (key == 'l') {
+			RShape loadedShape = RG.loadShape(saveFilePath);
+			drawShape(loadedShape);
 		}
 	}
 	
