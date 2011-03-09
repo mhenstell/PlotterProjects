@@ -18,8 +18,17 @@ public interface PlotterDriver {
 	boolean penDown = true;
 	boolean penUpFirst = true;
 	
+	boolean invertX = false;
+	boolean invertY = false;
+	
+	public void setScreenSize(PVector screenSize);
+	public void setMode(plotterMode mode);
+	
 	public void livePlot(PVector start, PVector end, boolean penDown);
 	public boolean penUp();
 	public void plotShape(RShape shape);
-	public void newPath(RPath currentPath);
+	public void plotPath(RPath currentPath);
+	public void setConnection(String plotterIP, int plotterPort);
+	public void setInverts(boolean invertX, boolean invertY);
+	public void connect();
 }
