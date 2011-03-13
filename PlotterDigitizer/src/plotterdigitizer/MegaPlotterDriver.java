@@ -92,7 +92,10 @@ public class MegaPlotterDriver implements PlotterDriver {
 				plotterSocket = new Socket(plotterIP, plotterPort);
 				out = new PrintWriter(plotterSocket.getOutputStream(), true);
 				System.out.println(plotterSocket.isConnected());
-
+				
+				out.println("LE");
+				out.println("HOME");
+				
 			} catch (UnknownHostException e) {
 				System.out.println(e.getMessage());
 			} catch (IOException e) {
@@ -193,6 +196,9 @@ public class MegaPlotterDriver implements PlotterDriver {
 			points = scalePoints(points);
 			
 			ArrayList<String> cmd = new ArrayList<String>();
+			
+			cmd.add("PA " + PApplet.floor(points[0].x) + " " + PApplet.floor(points[0].y));
+			
 			cmd.add("PD");
 			
 			for (RPoint point : points) {
@@ -222,9 +228,9 @@ public class MegaPlotterDriver implements PlotterDriver {
 		for (RPoint point : points) {
 			
 			if (!invertX) {
-				point.x = PApplet.floor(PApplet.map(point.x, 0, screenSize.x, plotterMin.x, plotterMax.x));
+				point.x = PApplet.floor(PApplet.map(point.x, 0, screenSize.x, plotterMin.x, PApplet.min(screenSize.x, plotterMax.x)));
 			} else {
-				point.x = PApplet.floor(PApplet.map(point.x, 0, screenSize.x, plotterMax.x, plotterMin.x));
+				point.x = PApplet.floor(PApplet.map(point.x, 0, screenSize.x, PApplet.min(screenSize.x, plotterMax.x), plotterMin.x));
 			}
 			
 			if (!invertY) {
