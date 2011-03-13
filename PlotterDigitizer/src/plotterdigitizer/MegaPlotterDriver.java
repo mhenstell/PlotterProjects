@@ -1,9 +1,6 @@
 package plotterdigitizer;
 
-import geomerative.RPath;
-import geomerative.RPoint;
-import geomerative.RShape;
-
+import geomerative.*;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,25 +11,20 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
-
 import processing.core.PApplet;
 import processing.core.PVector;
 import processing.net.Client;
 import java.util.ArrayList;
-import java.util.List;
-
-import com.sun.tools.javac.util.Position;
 
 public class MegaPlotterDriver implements PlotterDriver {
 
-	private plotterMode mode;
-	
-	PVector plotterMin = new PVector(0,0);
-	PVector plotterMax = new PVector(1200,0);
+	PVector plotterMin = new PVector(0,0); 		// Minimum plotter points - (0,0) should be bottom left
+	PVector plotterMax = new PVector(1200,0);   // Maximum plotter points - Top right. 1200 (mm) Max X for the Red Sail Plotter
 	
 	PVector screenSize = new PVector();
+	float screenRatio;
 	
-	ArrayList<PVector> points = new ArrayList<PVector>();
+	private plotterMode mode;
 	
 	private boolean penDown = true;
 	private boolean penUpFirst = true;
@@ -42,9 +34,7 @@ public class MegaPlotterDriver implements PlotterDriver {
 	
 	Socket plotterSocket = null;
 	PrintWriter out;
-	
-	float screenRatio;
-	
+
 	String plotterIP;
 	int plotterPort;
 
@@ -52,37 +42,8 @@ public class MegaPlotterDriver implements PlotterDriver {
 	private boolean invertY;
 	
 	public MegaPlotterDriver() {
-		
-		
-		
+
 	}
-	
-//	public MegaPlotterDriver(PVector screenSize) {
-//		this.screenSize = screenSize;
-//		this.mode = mode.LIVE_PLOT;
-//	}
-//	
-//	public MegaPlotterDriver(PVector screenSize, plotterMode mode) {
-//		this.screenSize = screenSize;
-//		this.mode = mode;
-//	}
-//	
-//	public MegaPlotterDriver(PVector screenSize, plotterMode mode, String IP, int port) {
-//		this.screenSize = screenSize;
-//		this.mode = mode;
-//		
-//		
-//		
-//		
-//		
-//		if (plotterMax.y == 0) {
-//			plotterMax.y = PApplet.floor(screenSize.x / screenRatio);
-//		}
-//		
-//		System.out.println("Plotter Max Dimensions: " + plotterMax.x + "," + plotterMax.y);
-//		
-//	}
-	
 	public void connect() {
 		
 		if (plotterSocket == null) {
@@ -93,43 +54,36 @@ public class MegaPlotterDriver implements PlotterDriver {
 				out = new PrintWriter(plotterSocket.getOutputStream(), true);
 				System.out.println(plotterSocket.isConnected());
 				
-				out.println("LE");
-				out.println("HOME");
+				out.println("LE");		// Go Go Gadget Lights!
+				out.println("HOME");	// Go Go Gadget Homing!
 				
 			} catch (UnknownHostException e) {
 				System.out.println(e.getMessage());
 			} catch (IOException e) {
 				System.out.println(e.getMessage());
 			}
-
 		}
-	
 	}
 	
 	public void setScreenSize(PVector screenSize) {
 		this.screenSize = screenSize;
-		
 		screenRatio = screenSize.x / screenSize.y;
 		
 		if (plotterMax.y == 0) {
 			plotterMax.y = plotterMax.x / screenRatio;
 		}
 	}
-	
 	public void setMode(PlotterDriver.plotterMode mode) {
 		this.mode = mode;
 	}
-	
 	public void setConnection(String ip, int port) {
 		this.plotterIP = ip;
 		this.plotterPort = port;
 	}
-	
 	public void setInverts(boolean invertX, boolean invertY) {
 		this.invertX = invertX;
 		this.invertY = invertY;
 	}
-	
 	
 	public boolean penUp() {
 		
@@ -139,17 +93,16 @@ public class MegaPlotterDriver implements PlotterDriver {
 		
 		if (penUpFirst) {
 			penUpFirst = false;
-			
-			
 			return true;
 		}
 		
 		return false;
-		
 	}
 	
 	public void livePlot(PVector startPoint, PVector endPoint, boolean penDown) {
 		
+		/* Does this work? I've had this disabled for the big plotter */
+		/* This comment is even less useful than the last one 		  */
 		
 		if (sampled()) {
 			
@@ -170,35 +123,24 @@ public class MegaPlotterDriver implements PlotterDriver {
 			System.out.print("MEGA: " + cmd);
 			//System.out.println("Mega: (" + startPointMapped.x + "," + startPointMapped.y + ") -> (" + endPointMapped.x + "," + endPointMapped.y + ")");
 		}
-		
-		
 	}
-	
-	
-
 	public boolean sampled() {
-		
 		if (currentSample == sampleNum) {
 			currentSample = 1;
 			return true;
 		}
-		
-		
+
 		currentSample++;
 		return false;
-		
 	}
 	
 	public void plotPath(RPath path) {
 		if (this.mode == mode.MOUSE_UP_PLOT) {
 			RPoint[] points = path.getPoints();
-			
 			points = scalePoints(points);
 			
 			ArrayList<String> cmd = new ArrayList<String>();
-			
 			cmd.add("PA " + PApplet.floor(points[0].x) + " " + PApplet.floor(points[0].y));
-			
 			cmd.add("PD");
 			
 			for (RPoint point : points) {
@@ -208,19 +150,20 @@ public class MegaPlotterDriver implements PlotterDriver {
 			cmd.add("PU");
 			
 			System.out.println("MEGA: " + cmd.toString());
-			
 			sendCommands(cmd);
 		}
 	}
+	public void plotShape(RShape shape) {
+		// Stub stub stub stub stub stub WTF stub
+		
+	}
 	
-	private void sendCommands(ArrayList<String> commands) {
-				
+	private void sendCommands(ArrayList<String> commands) {		
 		if ((plotterSocket != null) && (plotterSocket.isConnected())) {
 			for (String command : commands) {
 				out.println(command);
 			}
 		}
-		
 	}
 	
 	private RPoint[] scalePoints(RPoint[] points) {
@@ -238,20 +181,9 @@ public class MegaPlotterDriver implements PlotterDriver {
 			} else {
 				point.y = PApplet.floor(PApplet.map(point.y, 0, screenSize.y, plotterMax.y, plotterMin.y));
 			}
-			
-			
 		}
 		
 		return points;
-		
 	}
 
-	@Override
-	public void plotShape(RShape shape) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	
 }
