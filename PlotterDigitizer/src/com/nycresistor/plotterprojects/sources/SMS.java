@@ -5,18 +5,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.Arrays;
 
-import com.google.gson.*;
+import org.json.*;
 
 public class SMS implements DataSource {
 	
 	DataSource.dataType type = dataType.SMS;
 	String messageURL = "http://localhost:8081";
 	
-	String fromNum;
-	String messageBody;
-	
+//	String fromNum;
+//	String messageBody;
+//	
 	public SMS() {
 		
 	}
@@ -52,19 +53,29 @@ public class SMS implements DataSource {
 	}
 	
 	private Message parseMessage(String inMessage) {
+
+		System.out.println(inMessage);
 		
+		JSONObject jo = null;
+		try {
+			jo = new JSONObject(inMessage);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		// Because fuck JSON parsing in Java, that's why
-		String[] args = inMessage.replace("{", "").replace("}", "").replace("\"", "").split(",");
+		String target = jo.getString("target");
+		JSONObject message = jo.getJSONObject("message");
 		
-		//This will break
-		String target = args[0].split(":")[1];
-		String fromNum = args[2].split(":")[1];
-		String body = args[3].split(":")[1];
+		String type = message.getString("type");
+		String fromNum = message.getString("from");
+		String body = message.getString("body");
 		
-		Message message = new Message(fromNum, body);
+		Message msg = new Message();
+		msg.SMS(fromNum, body);
 		
-		return message;
+		return msg;
+
 		
 	}
 	
