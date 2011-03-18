@@ -37,8 +37,12 @@ public class PlotterText extends PApplet {
 	RPolygon bounds = null;
 	
 	RPoint cursorLocation = new RPoint(0, 20);
-	RShape previousWord = null;
+	RPoint lastWordPoint = new RPoint(0, 20);
 	float wordSpacing, lineSpacing;
+	float cursor;
+	
+	int currentLine = 1;
+	ArrayList<RShape> lines = new ArrayList<RShape>();
 	
 	public static void main(String[] args) {
 		 PApplet.main(new String[] { com.nycresistor.plotterprojects.PlotterText.class.getName() });
@@ -65,20 +69,7 @@ public class PlotterText extends PApplet {
 		
 	}
 	
-	private RPoint wordLocation(RShape word) {
-		
-		RPoint cursor = new RPoint(cursorLocation);
-		
-		float wordWidth = word.getWidth();
-		RPoint wordCenter = word.getCenter();
-		
-		RPoint wordEndPoint = new RPoint(wordCenter.x + (wordWidth/2) + wordSpacing, cursorLocation.y);
-		float wordEndX = wordEndPoint.x;
-		cursorLocation.add(new RPoint(wordEndX, 0));
-		
-		
-		return cursor;
-	}
+	
 	
 	public void draw() {
 		
@@ -89,56 +80,58 @@ public class PlotterText extends PApplet {
 		String[] words = messageString.split(" ");
 		ArrayList<RShape> wordShapes = new ArrayList<RShape>();
 		
+		
 		for (String word : words) {
 			RShape letter = font.toShape(word);
 			wordShapes.add(letter);
 		}
 		
+		int lineLength = 0;
+		RShape currentLineShape = new RShape();
+		
+		printWords(wordShapes); 
+		
+		cursor = 0;
+		currentLine++;
+
+		delay(1000);
+	}
+	
+	public void clearScreen() {
+		background(255);
+		currentLine = 1;
+		plotter.home();
+	}
+	
+	private void printWords(ArrayList<RShape> wordShapes) {
 		for (RShape word : wordShapes) {
-			print(words[wordShapes.indexOf(word)] + ": ");
-			RPoint translatePoint = wordLocation(word);
-			print("Translate Point: " + translatePoint.x + "," + translatePoint.y);
-			word.translate(translatePoint);		
 			
-			println(" Bounds: (" + (int)word.getTopLeft().x + "," + (int)word.getTopLeft().y + ") (" + (int)word.getBottomRight().x + "," + (int)word.getBottomRight().y + ")");
+			if ((currentLine * lineSpacing) > screenSize.y) {
+				println("OVER Y");
+				clearScreen();
+			}
+			
+			//print(words[wordShapes.indexOf(word)] + ": ");
+			float newCursor = cursor + word.getWidth() + wordSpacing;
+			
+			RShape newShape = new RShape(word);
+			
+			if (newCursor > screenSize.x) {
+				cursor = word.getWidth() + wordSpacing;
+				currentLine++;					
+			} else {
+				cursor+= word.getWidth() + wordSpacing;
+			}
+		
+			word.translate(new RPoint(cursor - word.getWidth() - wordSpacing, currentLine * lineSpacing));
+			
+			
+
+			print(" Width: " + word.getWidth());
+			print(" CL: " + currentLine + " Cur: " + (int)cursor);
+			println(" Translated: " + word.getX() + "," + word.getY());
 			word.draw();
 		}
-		
-		
-		
-		nextLine();
-		
-//		
-//		RPoint tl = new RPoint(0,0);
-//		RPoint tr = new RPoint(screenSize.x, 0);
-//		RPoint bl = new RPoint(0, 20);
-//		RPoint br = new RPoint(screenSize.x, 20);
-//		RPoint[] rectPoints = {tl, tr, br, bl};
-		//RPolygon textLine = new RPolygon(rectPoints);
-		
-		//RPoint startingPoint = getStartingPoint();
-		
-		
-		//RPoint[][] pointsArray = messageShape.getPointsInPaths();
-				
-	
-		
-		delay(2000);
 	}
-	
-	private void nextLine() {
-		RPoint newLineStart = new RPoint(0, cursorLocation.y + lineSpacing);
-		cursorLocation = newLineStart;
-	}
-	
-	private RPoint getStartingPoint() {
-		
-		RPoint startingPoint = new RPoint(0,0);
-		
-		
-		return startingPoint;
-	}
-	
-	
 
 }

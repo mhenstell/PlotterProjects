@@ -186,4 +186,11 @@ public class MegaPlotterDriver implements PlotterDriver {
 		return points;
 	}
 
+	public void home() {
+		
+		System.out.println("HOMEING");
+		//out.println("HOME");
+		
+	}
+
 }

@@ -31,4 +31,5 @@ public interface PlotterDriver {
 	public void setConnection(String plotterIP, int plotterPort);
 	public void setInverts(boolean invertX, boolean invertY);
 	public void connect();
+	public void home();
 }
