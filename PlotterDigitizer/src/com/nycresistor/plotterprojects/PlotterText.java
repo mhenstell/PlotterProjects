@@ -16,6 +16,7 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 import com.nycresistor.plotterprojects.sources.*;
+import com.nycresistor.plotterprojects.sources.DataSource.dataType;
 import com.nycresistor.plotterprojects.drivers.*;
 
 
@@ -25,6 +26,8 @@ public class PlotterText extends PApplet {
 	
 	PlotterDriver plotter = new MegaPlotterDriver();
 	PlotterDriver.plotterMode plotterMode = PlotterDriver.plotterMode.MOUSE_UP_PLOT;
+	
+	DataSource.dataType dataSource = DataSource.dataType.SMS;
 	
 	String plotterIP = "127.0.0.1";
 	int plotterPort = 2000;
@@ -73,34 +76,58 @@ public class PlotterText extends PApplet {
 	
 	public void draw() {
 		
-//		Message message = source.getMessage();
-//		String messageString = message.getBody();
+///		Message message = source.getMessage();
+//	/	String messageString = message.getBody();
 		
 		String messageString = "The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog";
-		String[] words = messageString.split(" ");
+		
+		Message message = new Message();
+		message.SMS("3103090428", messageString);
+		
+		printMessage(message);
+
+		lineBreak();
+		
+		delay(1000);
+	}
+	
+	public void printMessage(Message message) {
+		String messageBody = message.getBody();
+		String[] words = messageBody.split(" ");
+		
+		// Print main message
 		ArrayList<RShape> wordShapes = new ArrayList<RShape>();
-		
-		
 		for (String word : words) {
 			RShape letter = font.toShape(word);
 			wordShapes.add(letter);
 		}
 		
-		int lineLength = 0;
-		RShape currentLineShape = new RShape();
+		printWords(wordShapes);
 		
-		printWords(wordShapes); 
+		// Print subtext
+		String subtext = getSubtext(message);
+		println(subtext);
 		
-		cursor = 0;
-		currentLine++;
-
-		delay(1000);
 	}
 	
-	public void clearScreen() {
-		background(255);
-		currentLine = 1;
-		plotter.home();
+	private String getSubtext(Message message) {
+		
+		StringBuilder subtext = new StringBuilder();
+		
+		if (dataSource == dataType.SMS) {
+			subtext.append("From: " + formatPhoneNumber(message.getFromNum()));
+			
+			
+		}
+		
+		return subtext.toString();
+	}
+	
+	private String formatPhoneNumber(String fromNum) {
+		//todo
+		String formattedNumber = fromNum;
+		
+		return formattedNumber;
 	}
 	
 	private void printWords(ArrayList<RShape> wordShapes) {
@@ -118,7 +145,7 @@ public class PlotterText extends PApplet {
 			
 			if (newCursor > screenSize.x) {
 				cursor = word.getWidth() + wordSpacing;
-				currentLine++;					
+				lineBreak();					
 			} else {
 				cursor+= word.getWidth() + wordSpacing;
 			}
@@ -132,6 +159,16 @@ public class PlotterText extends PApplet {
 			println(" Translated: " + word.getX() + "," + word.getY());
 			word.draw();
 		}
+	}
+	public void clearScreen() {
+		background(255);
+		currentLine = 1;
+		plotter.home();
+	}
+	
+	public void lineBreak() {
+		currentLine++;
+		cursor = 0;
 	}
 
 }
