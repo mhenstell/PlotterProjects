@@ -25,19 +25,17 @@ public class HPPlotterDriver {
 
   int currentSample = 1;
   int sampleNum = 3;
-  
+
   PrintWriter out;
 
   private boolean invertX;
   private boolean invertY;
-  
-  Serial serial;
-  
-  public void connect(Serial serial) {
-   
-    this.serial = serial;
 
-     
+  Serial serial;
+
+  public void connect(Serial serial) {
+
+    this.serial = serial;
   }
 
   public void setScreenSize(PVector screenSize) {
@@ -81,43 +79,40 @@ public class HPPlotterDriver {
 
   public void plotPath(RPath path) {
 
-      RPoint[] points = path.getPoints();
-      points = scalePoints(points);
-      
-      StringBuilder cmd = new StringBuilder();
-      //ArrayList<String> cmdList = new ArrayList<String>();
-      cmd.append("PU" + floor(points[0].x) + "," + floor(points[0].y) + ";\n");
-      cmd.append("PD");
-      int index = 0;
-      
-      for (RPoint point : points) {
-         if (index > 0) {
-           cmd.append(","); 
-         }
-        index++;
-        cmd.append(floor(point.x) + "," + floor(point.y));
+    RPoint[] points = path.getPoints();
+    points = scalePoints(points);
 
+    StringBuilder cmd = new StringBuilder();
+    //ArrayList<String> cmdList = new ArrayList<String>();
+    cmd.append("PU" + floor(points[0].x) + "," + floor(points[0].y) + ";\n");
+    cmd.append("PD");
+    int index = 0;
+
+    for (RPoint point : points) {
+      if (index > 0) {
+        cmd.append(",");
       }
+      index++;
+      cmd.append(floor(point.x) + "," + floor(point.y));
+    }
 
-      //cmd.add("PU");
+    //cmd.add("PU");
 
-      //System.out.println("HP: " + cmd.toString());
-      
-      cmd.append(";\n");
-      sendCommands(cmd.toString());
-    
+    //System.out.println("HP: " + cmd.toString());
+
+    cmd.append(";\n");
+    sendCommands(cmd.toString());
   }
 
   private void sendCommands(String commands) {		
-    
-      println(commands);
-      try {
-        serial.write(commands);
-      } catch (Exception e) {
-        println("Could not write to serial.");
-      }
-    
-    
+
+    println(commands);
+    try {
+      serial.write(commands);
+    } 
+    catch (Exception e) {
+      println("Could not write to serial.");
+    }
   }
 
   private RPoint[] scalePoints(RPoint[] points) {
@@ -140,12 +135,6 @@ public class HPPlotterDriver {
     }
 
     return points;
-  }
-
-  public void home() {
-
-    System.out.println("HOMEING");
-    //out.println("HOME");
   }
 }
 

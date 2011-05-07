@@ -1,3 +1,4 @@
+import com.nootropic.processing.layers.*;
 import processing.video.*;
 import geomerative.*;
 import org.apache.batik.svggen.font.table.*;
@@ -21,35 +22,41 @@ boolean invertY = true;
 
 /* OK Stop Altering Shit Now */
 
+int countdown;
+int countdownStart;
 
-RShape shape = new RShape();
-RPath currentPath = new RPath();
+//RShape shape = new RShape();
+//RPath currentPath = new RPath();
 
-PVector endPoint = new PVector(0, 0);
-PVector startPoint = new PVector(0, 0);
+//PVector endPoint = new PVector(0, 0);
+//PVector startPoint = new PVector(0, 0);
 
 int numPixels;
-Capture video;
 
-int captureCountdown = 0;
-float captureTime;
-boolean captureMode = false;
-boolean plottingMode = false;
-boolean shapeLoaded = false;
-boolean shapePlotted = false;
-boolean fading = false;
-boolean imageTaken = false;
-
-int rectAlpha = 0;
-int rectAlphaDirection = 1;
-int rectAlphaStep = 10;
 RShape loadedShape;
+
+AppletLayers layers;
+
+String mode = "GREETING";
 
 public void setup() {
   size((int)screenSize.x, (int)screenSize.y);
 
   background(255);
-
+  
+  layers = new AppletLayers(this);
+  LogicLayer ll = new LogicLayer(this);
+  WebcamLayer wl = new WebcamLayer(this);
+  OverLayer ol = new OverLayer(this);
+  
+  ol.clipX = 0;
+  ol.clipY = height - 100;
+  ol.clipWidth = width;
+  ol.clipHeight = 100;
+  
+  layers.addLayer(wl);
+  layers.addLayer(ol);
+  
   plotter.setScreenSize(screenSize);
   plotter.setInverts(invertX, invertY);
 
@@ -72,98 +79,34 @@ public void setup() {
   numPixels = video.width * video.height;
   noCursor();
   smooth();
+  
 }
 
 public void draw() {
 
+  
+}
 
-  // - - - - - CAPTURE TIME - - - - -
-
-  if (captureMode == true) {
-    print("CM ");
-    // COUNTDOWN MODE - - - - -
-
-    if (captureCountdown > 0) {
-      captureCountdown -= millis() - captureTime;
-      captureTime = millis();
-      println(ceil(captureCountdown/1000) + 1);
-
-      if (ceil(captureCountdown/1000) + 1 == 0) {
-        fading = true;
-      }
-    } 
-    else {
-      if (!imageTaken) {
-        saveImage();
-        //runScript();
-        println("Captured!");
-        imageTaken = true;
-        fading = true;
-      }
-
-      //captureMode = false;
-      //plottingMode = true;
-    }
-  } //capturemode
-
-    // - - - - - PLOTTING TIME - - - - -
-
-  if (plottingMode == true) {
-    if (!shapeLoaded) {
-      background(255);
-      try {
-        File shapeFile = new File("/Users/max/Dropbox/Projects/PlotterProjects/PlotterWebcam/captureChan2.svg");
-        loadedShape = RG.loadShape(shapeFile.getPath());
-        loadedShape.transform(0, 0, width, height);
-        drawShape(loadedShape);
-        shapeFile.delete();
-        shapeLoaded = true;
-      } 
-      catch (Exception e) {
-        println("Not ready to load the SVG yet." + e);
-      }
-    } 
-    else {
-      if (!shapePlotted) {
-        plotShape(loadedShape); 
-        shapePlotted = true;
-      }
-    }
-
-    // - - - - - VIDEO DISPLAY - - - - -
-  } 
-  else {
-    if (video.available()) {
-      video.read();
-      image(video, 0, 0);
-    }
-
-    //    // FADE MODE - - - - -
-    //      if (fading) {
-    //        print("FD " + rectAlphaDirection + " " + rectAlpha);
-    //        println();
-    //        rectAlpha += 10 * rectAlphaDirection;
-    //        fill(255, rectAlpha);
-    //        rect(0, 0, width, height);
-    //        if ((rectAlpha > 235) || (rectAlpha < 20)) {
-    //          fading = false;
-    //          rectAlphaDirection = rectAlphaDirection * -1;
-    //        }
-    //      }
+// paint method for Processing 1.5 or higher:
+void paint(java.awt.Graphics g) {
+  // This method MUST be present in your sketch for layers to be rendered!
+  if (layers != null) {
+    layers.paint(this);
+  } else {
+    super.paint(g);
   }
 }
 
-
 public void mousePressed() {
-  captureTime = millis();
-  captureSequence();
+//  captureTime = millis();
+//  captureSequence();
+
+  fireTheCapture();
 }
 
-public void captureSequence() {
+public void fireTheCapture() {
 
-  captureCountdown = 3000;
-  captureMode = true;
-  rectAlphaDirection = 1;
+  mode = "COUNTDOWN";
 }
 
 public void saveImage() {
@@ -180,39 +123,16 @@ public void runScript() {
   }
 }
 
-public void mouseReleased() {
-}
-
-//  public void keyPressed(KeyEvent e)
-//  {
-//    int mods = e.getModifiers();
-//    String key = KeyEvent.getKeyText(e.getKeyCode());
+//public void drawShape(RShape inShape) {
 //
-//    println("Mods: " + mods + " Key: " + key);
+//  // Likes being converted into points and back into a shape for some reason.
+//  // I blame the schools.
 //
-//    if (mods == 2 || mods == 4) {
-//      if (key.equalsIgnoreCase("s")) {
-//        saveShape();
-//      }
-//      else if (key.equalsIgnoreCase("o")) {
-//        openShape();
-//      }
-//      else if (key.equalsIgnoreCase("p")) {
-//        plotShape();
-//      }
-//    }
-//  }
-
-public void drawShape(RShape inShape) {
-
-  // Likes being converted into points and back into a shape for some reason.
-  // I blame the schools.
-
-  RPoint[][] pointsArray = inShape.getPointsInPaths();
-  RShape newShape = new RShape(pointsArray);
-  shape = newShape;
-  shape.draw();
-}
+//  RPoint[][] pointsArray = inShape.getPointsInPaths();
+//  RShape newShape = new RShape(pointsArray);
+//  shape = newShape;
+//  shape.draw();
+//}
 public void plotShape(RShape inshape) {
 
   RPoint[][] pointsArray = inshape.getPointsInPaths();
