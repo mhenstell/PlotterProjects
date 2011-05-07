@@ -34,10 +34,13 @@ Capture video;
 int captureCountdown = 0;
 float captureTime;
 boolean captureMode = false;
-
+boolean plottingMode = false;
+boolean shapeLoaded = false;
+boolean shapePlotted = false;
 int rectAlpha = 0;
 int rectAlphaDirection = 0;
 int rectAlphaStep = 10;
+RShape loadedShape;
 
 public void setup() {
   size((int)screenSize.x, (int)screenSize.y);
@@ -70,65 +73,65 @@ public void setup() {
 
 public void draw() {
 
+  //  stroke(255,0,0);
+  //  noFill();
+  //  strokeWeight(10);
+  //  rect(100,100,100,100);
 
-  if (video.available()) {
-    video.read();
-    image(video, 0, 0);
-  }
-    
+  if (captureMode == true) {
+    if (captureCountdown > 0) {
+      captureCountdown -= millis() - captureTime;
+      captureTime = millis();
+      println(ceil(captureCountdown/1000) + 1);
+    } 
+    else {
 
+      //PImage b = loadImage("white.jpg");
+      //image(b, 0, 0);
+      fill(255);
+      rect(0, 0, width, height);
 
-    //  stroke(255,0,0);
-    //  noFill();
-    //  strokeWeight(10);
-    //  rect(100,100,100,100);
+      saveImage();
+      runScript();
+      println("Captured!");
 
-    if (captureMode == true) {
-      if (captureCountdown > 0) {
-        captureCountdown -= millis() - captureTime;
-        captureTime = millis();
-        println(ceil(captureCountdown/1000) + 1);
+      captureMode = false;
+      plottingMode = true;
+    }
+  } //capturemode
+
+    if (plottingMode == true) {
+
+    //noStroke();
+    //fill(255);
+    //rect(0, 500, width, 100);
+    if (!shapeLoaded) {
+      background(255);
+      try {
+        File shapeFile = new File("/Users/max/Dropbox/Projects/PlotterProjects/PlotterWebcam/captureChan2.svg");
+        loadedShape = RG.loadShape(shapeFile.getPath());
+        loadedShape.transform(0, 0, width, height);
+        drawShape(loadedShape);
+        shapeFile.delete();
+        shapeLoaded = true;
       } 
-      else {
-        //captureMode = false;
-
-        if (rectAlphaDirection == 1) {
-          //Turn screen white
-          println("Up: " + rectAlpha);
-          //noStroke();
-          //fill(255, rectAlpha);
-          //rect(0, 0, width, height);
-         
-          PImage b = loadImage("white.jpg");
-          tint(255, rectAlpha);
-          image(b,0,0);
-          rectAlpha += rectAlphaStep;
-        } 
-        else if (rectAlphaDirection == -1) {
-          println("Down: " + rectAlpha);
-          rectAlpha -= rectAlphaStep;
-          //noStroke();
-          //fill(255, rectAlpha);
-          //rect(0, 0, width, height);
-           PImage b = loadImage("white.jpg");
-          tint(255, rectAlpha);
-          image(b,0,0);
-        }
-
-        if (rectAlpha > 245) {
-          //done with white screen
-          saveImage();
-          runScript();
-          println("Captured!");
-          rectAlphaDirection = -1;
-        } 
-        else if (rectAlpha < 10) {
-          rectAlphaDirection = 0; 
-          println("Back to normal!");
-          captureMode = false;
-        }
+      catch (Exception e) {
+        println("Not ready to load the SVG yet." + e);
+      }
+    } 
+    else {
+      if (!shapePlotted) {
+        plotShape(loadedShape); 
+        shapePlotted = true;
       }
     }
+  } 
+  else {
+    if (video.available()) {
+      video.read();
+      image(video, 0, 0);
+    }
+  }
 }
 
 
@@ -191,41 +194,13 @@ public void drawShape(RShape inShape) {
   shape = newShape;
   shape.draw();
 }
-//  public void plotShape() {
-//
-//    RPoint[][] pointsArray = shape.getPointsInPaths();
-//
-//    for (RPoint[] points : pointsArray) {
-//      RPath path = new RPath(points);
-//      plotter.plotPath(path);
-//    }
-//  }
-public void openShape() {
-  JFileChooser chooser = new JFileChooser();
-  chooser.setFileFilter(chooser.getAcceptAllFileFilter());
+public void plotShape(RShape inshape) {
 
-  int returnVal = chooser.showOpenDialog(null);
+  RPoint[][] pointsArray = inshape.getPointsInPaths();
 
-  if (returnVal == JFileChooser.APPROVE_OPTION) 
-  {
-    println("Opening file: " + chooser.getSelectedFile().getName());
-
-    RShape loadedShape = RG.loadShape(chooser.getSelectedFile().getAbsolutePath());
-    drawShape(loadedShape);
+  for (RPoint[] points : pointsArray) {
+    RPath path = new RPath(points);
+    plotter.plotPath(path);
   }
 }
-//  public void saveShape() {
-//
-//    JFileChooser chooser = new JFileChooser();
-//    chooser.setFileFilter(chooser.getAcceptAllFileFilter());
-//    chooser.setSelectedFile(new File("save.svg"));
-//    int returnVal = chooser.showSaveDialog(null);
-//
-//    if (returnVal == JFileChooser.APPROVE_OPTION) 
-//    {
-//      println("Saving file: " + chooser.getSelectedFile().getName());
-//
-//      RG.saveShape(chooser.getSelectedFile().getAbsolutePath(), shape);
-//    }
-//  }
 

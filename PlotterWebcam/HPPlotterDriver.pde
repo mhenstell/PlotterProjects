@@ -35,7 +35,7 @@ public class HPPlotterDriver {
   
   public void connect(Serial serial) {
    
-    
+    this.serial = serial;
 
      
   }
@@ -111,7 +111,11 @@ public class HPPlotterDriver {
   private void sendCommands(String commands) {		
     
       println(commands);
-      serial.write(commands);
+      try {
+        serial.write(commands);
+      } catch (Exception e) {
+        println("Could not write to serial.");
+      }
     
     
   }
