@@ -37,8 +37,11 @@ boolean captureMode = false;
 boolean plottingMode = false;
 boolean shapeLoaded = false;
 boolean shapePlotted = false;
+boolean fading = false;
+boolean imageTaken = false;
+
 int rectAlpha = 0;
-int rectAlphaDirection = 0;
+int rectAlphaDirection = 1;
 int rectAlphaStep = 10;
 RShape loadedShape;
 
@@ -73,38 +76,39 @@ public void setup() {
 
 public void draw() {
 
-  //  stroke(255,0,0);
-  //  noFill();
-  //  strokeWeight(10);
-  //  rect(100,100,100,100);
+
+  // - - - - - CAPTURE TIME - - - - -
 
   if (captureMode == true) {
+    print("CM ");
+    // COUNTDOWN MODE - - - - -
+
     if (captureCountdown > 0) {
       captureCountdown -= millis() - captureTime;
       captureTime = millis();
       println(ceil(captureCountdown/1000) + 1);
+
+      if (ceil(captureCountdown/1000) + 1 == 0) {
+        fading = true;
+      }
     } 
     else {
+      if (!imageTaken) {
+        saveImage();
+        //runScript();
+        println("Captured!");
+        imageTaken = true;
+        fading = true;
+      }
 
-      //PImage b = loadImage("white.jpg");
-      //image(b, 0, 0);
-      fill(255);
-      rect(0, 0, width, height);
-
-      saveImage();
-      runScript();
-      println("Captured!");
-
-      captureMode = false;
-      plottingMode = true;
+      //captureMode = false;
+      //plottingMode = true;
     }
   } //capturemode
 
-    if (plottingMode == true) {
+    // - - - - - PLOTTING TIME - - - - -
 
-    //noStroke();
-    //fill(255);
-    //rect(0, 500, width, 100);
+  if (plottingMode == true) {
     if (!shapeLoaded) {
       background(255);
       try {
@@ -125,12 +129,27 @@ public void draw() {
         shapePlotted = true;
       }
     }
+
+    // - - - - - VIDEO DISPLAY - - - - -
   } 
   else {
     if (video.available()) {
       video.read();
       image(video, 0, 0);
     }
+
+    //    // FADE MODE - - - - -
+    //      if (fading) {
+    //        print("FD " + rectAlphaDirection + " " + rectAlpha);
+    //        println();
+    //        rectAlpha += 10 * rectAlphaDirection;
+    //        fill(255, rectAlpha);
+    //        rect(0, 0, width, height);
+    //        if ((rectAlpha > 235) || (rectAlpha < 20)) {
+    //          fading = false;
+    //          rectAlphaDirection = rectAlphaDirection * -1;
+    //        }
+    //      }
   }
 }
 
