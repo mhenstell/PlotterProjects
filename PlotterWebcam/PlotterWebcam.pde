@@ -44,13 +44,14 @@ AppletLayers layers;
 OverLayer ol;
 WebcamLayer wl;
 RShape shape;
-
+RShape logo;
 
 String mode = "GREETING";
 //String mode = "";
 
 public void setup() {
   shape = new RShape();
+  logo = new RShape();
   //HPPlotterDriver plotter = new HPPlotterDriver();
   size((int)screenSize.x, (int)screenSize.y);
 
@@ -121,6 +122,7 @@ public void mousePressed() {
   else if (mode == "CONFIRM") {
     mode = "PLOTTING";
     openShape();
+    plotShape(logo);
     plotShape(shape);
   }
 }
@@ -129,7 +131,10 @@ void openShape() {
   background(255);
   try {
     File shapeFile = new File("/Users/max/Dropbox/Projects/PlotterProjects/PlotterWebcam/captureChan2.svg");
+    File logoFile = new File("/Users/max/Dropbox/Projects/PlotterProjects/PlotterWebcam/NYCR_logo.svg");
     shape = RG.loadShape(shapeFile.getPath());
+    logo = RG.loadShape(logoFile.getPath());
+    logo.transform(width+500, height+400, 100, 100);
     shape.transform(0, 0, width, height);
     //drawShape(loadedShape);
     //shapeFile.delete();
