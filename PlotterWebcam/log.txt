@@ -1,0 +1,26 @@
+SHELL=/bin/bash
+TMPDIR=/var/folders/pX/pXnZUpu1FmSkBT2VFziRRU+++TI/-Tmp-/
+Apple_PubSub_Socket_Render=/tmp/launch-322Mf3/Render
+USER=max
+com.apple.java.jvmTask=CommandLine.java
+JAVA_LIBRARY_PATH=/Applications/Processing.app/Contents/Resources/Java:/System/Library/PrivateFrameworks/JavaApplicationLauncher.framework/Resources
+COMMAND_MODE=unix2003
+SSH_AUTH_SOCK=/tmp/launch-3nIqq9/Listeners
+__CF_USER_TEXT_ENCODING=0x1F5:0:0
+PATH=/usr/bin:/bin:/usr/sbin:/sbin:/opt/local/bin:/usr/local/bin
+PWD=/Applications
+HOME=/Users/max
+JAVA_MAIN_CLASS_18224=processing.core.PApplet
+SHLVL=2
+LOGNAME=max
+DISPLAY=/tmp/launch-JZpc7A/org.x:0
+JAVA_ARCH=x86_64
+APP_NAME_18224=PlotterWebcam
+_=/usr/bin/env
+v-string in use/require non-portable at /opt/local/bin/pnmquant line 11.
+pnmcolormap: making histogram...
+pnmcolormap: Too many colors (more than 32767)!  scaled color resolution from maxval 255 to maxval 63 before choosing
+pnmcolormap: 12831 colors found
+pnmcolormap: choosing 4 colors...
+pnmremap: 4 colors found in colormap
+jpegtopnm: WRITING PGM FILE
